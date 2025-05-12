@@ -1,14 +1,19 @@
-from parser.file_reader import read_file
+from parser_utils.file_reader import FileReader
+from parser_utils.text_cleaner import TextCleaner
 
-def main():
-    file_path = "data/sample_resume.pdf"  # Change to .docx or .txt if needed
 
-    try:
-        text = read_file(file_path)
-        print("Extracted Resume Text:\n")
-        print(text[:1000])  # Show only first 1000 characters for now
-    except Exception as e:
-        print(f"Error reading file: {e}")
+file_path = "data/LinkedInCV.pdf"  # Change to .docx or .txt if needed
 
-if __name__ == "__main__":
-    main()
+
+try:
+    # read file
+    reader = FileReader(file_path)
+    raw_text = reader.read()
+
+    cleaner = TextCleaner(raw_text)
+    text = cleaner.clean()
+    
+    print("cleaned Resume Text:\n")
+    print(text)  
+except Exception as e:
+    print(f"Error reading file: {e}")
