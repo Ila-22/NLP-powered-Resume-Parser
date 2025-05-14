@@ -6,7 +6,7 @@ def extract_by_visual_gap(pdf_path, gap_spaces=6, indent_threshold=6):
 
     with pdfplumber.open(pdf_path) as pdf:
         for page_num, page in enumerate(pdf.pages, start=1):
-            print(f"\n--- Page {page_num} ---")
+            #print(f"\n--- Page {page_num} ---")
             text = page.extract_text(layout=True)
             if not text:
                 continue

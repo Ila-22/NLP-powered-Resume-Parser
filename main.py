@@ -1,24 +1,17 @@
-from parser_utils.pdf_parser import extract_by_visual_gap
-from parser_utils.text_utils import split_columns
+
+
+from parser_utils import TextUtils, extract_by_visual_gap
+
 
 pdf_path = "data/LinkedInCV.pdf"
 
-lines = extract_by_visual_gap(pdf_path)
-column_1, column_2 = split_columns(lines)
-
-# Example output
-print("--- Column 1 ---")
-for line in column_1:
-    print(line)
-
-print("\n--- Column 2 ---")
-for line in column_2:
-    print(line)
+lines = extract_by_visual_gap(pdf_path, gap_spaces=4, indent_threshold=4)
 
 
+column_1, column_2 = TextUtils.split_columns(lines)
 
-
-
+sections_col1 = TextUtils.group_sections_from_single_column(column_1)
+sections_col2 = TextUtils.group_sections_from_single_column(column_2)
 
 
 
