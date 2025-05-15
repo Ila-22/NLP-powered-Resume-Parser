@@ -1,11 +1,13 @@
-from parser_utils import TextUtils
 from parser_utils import PDFTextExtractor
+from parser_utils import TextUtils
 from parser_utils import CleaningUtils
 from parser_utils import ExtractionUtils
 
 
-# Instantiate the utility class
+# Instantiate classes
 utils = TextUtils()
+cleaner = CleaningUtils()
+info_extractor = ExtractionUtils()
 
 # choose an input
 input_num = 2
@@ -19,6 +21,7 @@ elif input_num == 2:
     # Option 2: Auto-detect or mixed
     extractor = PDFTextExtractor("data/sample_2.pdf", strategy="mixed")
     lines = extractor.structured_lines
+    merged_lines = extractor.merge_adjacent_header_lines(lines)
     column_1, column_2 = utils.split_columns(lines)
 else:
     ValueError(" input_num is either 1 or 2. ")
@@ -32,18 +35,18 @@ sections = utils.merge_section_dicts(sections_1, sections_2)
 
 # estimate years of experience 
 experience_section = sections["Experience"]  
-approx_years = utils.estimate_years_of_experience(experience_section)
+approx_years = info_extractor.estimate_years_of_experience(experience_section)
 print(f"Estimated years of experience: {approx_years}")
 
 # Clean out date ranges and durations from section content
-sections_no_date = utils.clean_all_sections_dates(sections)
+sections_no_date = cleaner.clean_all_sections_dates(sections)
 
 # Apply general text cleanup to remove artifacts, empty lines, etc.
-sections_cleaned = utils.clean_all_sections(sections_no_date)
+sections_cleaned = cleaner.clean_all_sections(sections_no_date)
 
 # extract keywords and erase the rest
 compressed_sections = {
-    section: utils.compress_section_to_keywords(lines)
+    section: cleaner.compress_section_to_keywords(lines)
     for section, lines in sections_cleaned.items()
 }
 

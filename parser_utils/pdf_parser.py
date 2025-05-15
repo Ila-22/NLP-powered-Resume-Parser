@@ -29,13 +29,31 @@ class PDFTextExtractor:
             raise ValueError(f"Unknown strategy: {self.strategy}")
 
 
-    def mixed_paragraph_and_column_layout(self, line_tolerance=8, gap_threshold=50):
+    def mixed_paragraph_and_column_layout(self, line_tolerance=8, gap_threshold=50, known_headers=None):
         """
         Smart extractor that:
         1. Clusters words into lines with vertical tolerance.
         2. Splits lines into columns only if a wide horizontal gap exists.
         """
         structured_lines = []
+        
+        # Use the default header map
+        if known_headers is None:
+            known_headers = {
+                "Contact": ["contact", "contact info", "contact information"],
+                "Experience": ["experience", "work experience", "professional experience", "experiences"],
+                "Education": ["education", "academic background", "educational background"],
+                "Certifications": ["certifications", "certification", "licenses"],
+                "Top Skills": ["top skills", "skills", "technical skills", "key skills"],
+                "Languages": ["languages", "language proficiency"],
+                "Portfolio": ["portfolio", "projects"],
+                "About Me": ["about me", "summary", "professional summary", "profile"]
+            }
+    
+        all_header_variants = set()
+        for variants in known_headers.values():
+            all_header_variants.update(variant.lower() for variant in variants)
+
 
         def cluster_words_into_lines(words, tolerance):
             lines = []
@@ -61,6 +79,24 @@ class PDFTextExtractor:
 
             for line_words in lines:
                 line_words = sorted(line_words, key=lambda w: w["x0"])
+                text_line = " ".join(w["text"] for w in line_words).strip().lower()
+
+                # when 2 or more headers seen in a line >> split sections
+                matched_headers = [
+                    h for h in all_header_variants if h in text_line
+                ]
+
+                if len(matched_headers) >= 2:
+                    # Force a semantic split based on matched headers
+                    first = matched_headers[0]
+                    second = matched_headers[1]
+                    structured_lines.append({
+                        "left": first.title(),
+                        "right": second.title()
+                    })
+                    continue
+                
+                # Otherwise, use gap-based logic
                 gaps = [
                     line_words[i+1]["x0"] - line_words[i]["x1"]
                     for i in range(len(line_words) - 1)
@@ -113,3 +149,59 @@ class PDFTextExtractor:
                 })
 
         return structured_lines
+    
+    
+    
+    def merge_adjacent_header_lines(lines, known_headers=None):
+        """
+        Merges consecutive header-only lines into a single left-right structured line.
+        Only merges when both lines contain nothing but known headers.
+        """
+        if known_headers is None:
+            known_headers = {
+                "Contact", "Experience", "Education",
+                "Certifications", "Top Skills", "Languages",
+                "Portfolio", "About Me", "Projects"
+            }
+    
+        headers_normalized = {h.lower() for h in known_headers}
+        merged_lines = []
+        i = 0
+    
+        while i < len(lines):
+            line = lines[i]
+            left = line.get("left", "").strip()
+            right = line.get("right", "").strip()
+    
+            is_left_header_only = left.lower() in headers_normalized and not right
+            is_right_header_only = right.lower() in headers_normalized and not left
+    
+            if i + 1 < len(lines):
+                next_line = lines[i + 1]
+                next_left = next_line.get("left", "").strip()
+                next_right = next_line.get("right", "").strip()
+    
+                is_next_left_header_only = next_left.lower() in headers_normalized and not next_right
+                is_next_right_header_only = next_right.lower() in headers_normalized and not next_left
+    
+                if is_left_header_only and is_next_left_header_only:
+                    merged_lines.append({
+                        "left": left,
+                        "right": next_left
+                    })
+                    i += 2
+                    continue
+                elif is_right_header_only and is_next_right_header_only:
+                    merged_lines.append({
+                        "left": right,
+                        "right": next_right
+                    })
+                    i += 2
+                    continue
+    
+            # Default: keep line
+            merged_lines.append(line)
+            i += 1
+    
+        return merged_lines
+
