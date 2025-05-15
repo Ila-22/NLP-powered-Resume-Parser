@@ -7,7 +7,7 @@ utils = TextUtils()
 pdf_path = "data/sample_1.pdf"
 
 # if two-column layout input
-lines = left_right_column_format(pdf_path, column_gap=150) # if sample_1 >> column_gap=150
+lines = left_right_column_format(pdf_path, column_gap=150)
 column_1, column_2 = utils.split_columns(lines)
 
 
