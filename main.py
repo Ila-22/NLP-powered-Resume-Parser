@@ -5,17 +5,21 @@ from parser_utils.pdf_parser import PDFTextExtractor
 # Instantiate the utility class
 utils = TextUtils()
 
+# choose an input
+input_num = 2
 
-# Option 1: Auto-detect or mixed
-extractor = PDFTextExtractor("data/sample_1.pdf", strategy="columns")
-lines = extractor.structured_lines
-column_1, column_2 = utils.split_columns(lines)
-
-
-# Option 2: Auto-detect or mixed
-extractor = PDFTextExtractor("data/sample_2.pdf", strategy="mixed")
-lines = extractor.structured_lines
-column_1, column_2 = utils.split_columns(lines)
+if input_num == 1: 
+    # Option 1: Auto-detect or mixed
+    extractor = PDFTextExtractor("data/sample_1.pdf", strategy="columns")
+    lines = extractor.structured_lines
+    column_1, column_2 = utils.split_columns(lines)
+elif input_num == 2:
+    # Option 2: Auto-detect or mixed
+    extractor = PDFTextExtractor("data/sample_2.pdf", strategy="mixed")
+    lines = extractor.structured_lines
+    column_1, column_2 = utils.split_columns(lines)
+else:
+    ValueError(" input_num is either 1 or 2. ")
 
 
 # extract CV sections independently from both columns
