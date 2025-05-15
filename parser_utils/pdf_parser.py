@@ -1,38 +1,38 @@
 import pdfplumber
 import re
 
-def extract_by_visual_gap(pdf_path, gap_spaces=6, indent_threshold=6):
+def extract_by_word_position(pdf_path, column_gap=200):
+    """
+    Extracts lines from PDF and splits into left/right columns
+    based on word x-positions rather than spaces in text.
+    * Use this method if the whole document is in a two-column 
+        layout and can be split into two!
+    """
     structured_lines = []
 
     with pdfplumber.open(pdf_path) as pdf:
-        for page_num, page in enumerate(pdf.pages, start=1):
-            #print(f"\n--- Page {page_num} ---")
-            text = page.extract_text(layout=True)
-            if not text:
-                continue
+        for page in pdf.pages:
+            words = page.extract_words()
 
-            for raw_line in text.split("\n"):
-                stripped_line = raw_line.strip()
-                
-                # Use gap-based splitting first
-                split_line = re.split(r'\s{' + str(gap_spaces) + r',}', stripped_line)
-                if len(split_line) == 2:
-                    left, right = split_line
-                elif len(split_line) == 1:
-                    leading_spaces = len(raw_line) - len(raw_line.lstrip())
-                    if leading_spaces >= indent_threshold:
-                        left = ""
-                        right = split_line[0]
+            # Group words by Y (top) line
+            lines_by_y = {}
+            for word in words:
+                y = round(word["top"], 1)  # bucket lines
+                lines_by_y.setdefault(y, []).append(word)
+
+            for y in sorted(lines_by_y):
+                left = []
+                right = []
+                for word in sorted(lines_by_y[y], key=lambda w: w["x0"]):
+                    if word["x0"] < column_gap:
+                        left.append(word["text"])
                     else:
-                        left = split_line[0]
-                        right = ""
-                else:
-                    left = split_line[0]
-                    right = " ".join(split_line[1:])
-                    
+                        right.append(word["text"])
+
                 structured_lines.append({
-                    "left": left.strip(),
-                    "right": right.strip()
+                    "left": " ".join(left).strip(),
+                    "right": " ".join(right).strip()
                 })
 
     return structured_lines
+

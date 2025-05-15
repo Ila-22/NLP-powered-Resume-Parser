@@ -1,22 +1,26 @@
-from parser_utils import TextUtils, extract_by_visual_gap
+from parser_utils import TextUtils, extract_by_visual_gap, extract_by_word_position
 
 # Instantiate the utility class
 utils = TextUtils()
 
 # Set the path to the PDF resume
-pdf_path = "data/LinkedInCV.pdf"
+pdf_path = "data/sample_1.pdf"
 
-# Extract lines from the PDF using visual gap and indentation logic
-lines = extract_by_visual_gap(pdf_path, gap_spaces=4, indent_threshold=4)
-
-# Split extracted lines into two logical columns based on layout
+# if two-column layout input
+lines = extract_by_word_position(pdf_path, column_gap=150) # if sample_1 >> column_gap=150
 column_1, column_2 = utils.split_columns(lines)
+
 
 # extract CV sections independently from both columns
 sections_1 = utils.group_sections_from_single_column(column_1)
 sections_2 = utils.group_sections_from_single_column(column_2)
     # Merge the grouped sections from both columns
 sections = utils.merge_section_dicts(sections_1, sections_2)
+
+# estimate years of experience 
+experience_section = sections["Experience"]  
+approx_years = utils.estimate_years_of_experience(experience_section)
+print(f"Estimated years of experience: {approx_years}")
 
 # Clean out date ranges and durations from section content
 sections_no_date = utils.clean_all_sections_dates(sections)
