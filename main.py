@@ -1,35 +1,20 @@
-from parser_utils import TextUtils, left_right_column_format, mixed_paragraph_and_column_layout
+from parser_utils import TextUtils
+from parser_utils.pdf_parser import PDFTextExtractor
+
 
 # Instantiate the utility class
 utils = TextUtils()
 
 
-#### TEST
-lines = mixed_paragraph_and_column_layout("data/sample_2.pdf")
+# Option 1: Auto-detect or mixed
+extractor = PDFTextExtractor("data/sample_1.pdf", strategy="columns")
+lines = extractor.structured_lines
 column_1, column_2 = utils.split_columns(lines)
 
 
-import pdfplumber
-with pdfplumber.open("data/sample_2.pdf") as pdf:
-    for page in pdf.pages:
-        words = page.extract_words()
-    
-        # Group words by Y (top) line
-        lines_by_y = {}
-        for word in words:
-            y = round(word["top"], 1)
-            lines_by_y.setdefault(y, []).append(word)
-    
-        for y in sorted(lines_by_y):
-            line_words = sorted(lines_by_y[y], key=lambda w: w["x0"])
-
-
-
-# Set the path to the PDF resume
-pdf_path = "data/sample_1.pdf"
-
-# if two-column layout input
-lines = left_right_column_format(pdf_path, column_gap=150)
+# Option 2: Auto-detect or mixed
+extractor = PDFTextExtractor("data/sample_2.pdf", strategy="mixed")
+lines = extractor.structured_lines
 column_1, column_2 = utils.split_columns(lines)
 
 
