@@ -1,5 +1,7 @@
 from parser_utils import TextUtils
-from parser_utils.pdf_parser import PDFTextExtractor
+from parser_utils import PDFTextExtractor
+from parser_utils import CleaningUtils
+from parser_utils import ExtractionUtils
 
 
 # Instantiate the utility class
@@ -39,7 +41,11 @@ sections_no_date = utils.clean_all_sections_dates(sections)
 # Apply general text cleanup to remove artifacts, empty lines, etc.
 sections_cleaned = utils.clean_all_sections(sections_no_date)
 
-
+# extract keywords and erase the rest
+compressed_sections = {
+    section: utils.compress_section_to_keywords(lines)
+    for section, lines in sections_cleaned.items()
+}
 
 
 
