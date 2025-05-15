@@ -1,7 +1,7 @@
 import pdfplumber
 import re
 
-def extract_by_word_position(pdf_path, column_gap=200):
+def left_right_column_format(pdf_path, column_gap=200):
     """
     Extracts lines from PDF and splits into left/right columns
     based on word x-positions rather than spaces in text.

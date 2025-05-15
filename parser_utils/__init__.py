@@ -1,5 +1,4 @@
 from .text_utils import TextUtils
-from .pdf_parser import extract_by_visual_gap
-from .pdf_parser import extract_by_word_position
+from .pdf_parser import left_right_column_format
 
-__all__ = ["TextUtils", "extract_by_visual_gap"]
+__all__ = ["TextUtils", "left_right_column_format"]

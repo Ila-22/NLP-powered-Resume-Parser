@@ -1,4 +1,4 @@
-from parser_utils import TextUtils, extract_by_visual_gap, extract_by_word_position
+from parser_utils import TextUtils, left_right_column_format
 
 # Instantiate the utility class
 utils = TextUtils()
@@ -7,7 +7,7 @@ utils = TextUtils()
 pdf_path = "data/sample_1.pdf"
 
 # if two-column layout input
-lines = extract_by_word_position(pdf_path, column_gap=150) # if sample_1 >> column_gap=150
+lines = left_right_column_format(pdf_path, column_gap=150) # if sample_1 >> column_gap=150
 column_1, column_2 = utils.split_columns(lines)
 
 
