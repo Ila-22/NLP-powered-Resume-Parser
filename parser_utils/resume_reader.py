@@ -1,7 +1,7 @@
 import pdfplumber
 import re
 
-class PDFTextExtractor:
+class PDF_CV_READER:
     
     def __init__(self, pdf_path, strategy="single"):
         """

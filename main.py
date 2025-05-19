@@ -1,4 +1,4 @@
-from parser_utils import PDFTextExtractor
+from parser_utils import PDF_CV_READER
 from parser_utils import TextUtils
 from parser_utils import CleaningUtils
 from parser_utils import ExtractionUtils
@@ -11,7 +11,7 @@ info_extractor = ExtractionUtils()
 
 
 """ TEST 2-columns
-extractor = PDFTextExtractor("data/sample_2.pdf", strategy="columns")
+extractor = PDF_CV_READER("data/sample_2.pdf", strategy="columns")
 lines = extractor.structured_lines
 column_1, column_2 = utils.split_columns(lines)
 
@@ -25,7 +25,7 @@ sections = utils.merge_section_dicts(sections_1, sections_2)
 
 
 
-extractor = PDFTextExtractor("data/sample_1.pdf")
+extractor = PDF_CV_READER("data/sample_1.pdf")
 lines = extractor.structured_lines
 
 # initial clean
