@@ -1,8 +1,9 @@
 import pdfplumber
+import re
 
 class PDFTextExtractor:
     
-    def __init__(self, pdf_path, strategy="auto"):
+    def __init__(self, pdf_path, strategy="single"):
         """
         Initializes and loads the PDF.
         Strategy options:
@@ -23,10 +24,37 @@ class PDFTextExtractor:
             return self.left_right_column_format()
         elif self.strategy == "mixed":
             return self.mixed_paragraph_and_column_layout()
-        elif self.strategy == "auto":
-            return self.mixed_paragraph_and_column_layout()
+        elif self.strategy == "single":
+            return self.extract_lines_from_pdf()
         else:
             raise ValueError(f"Unknown strategy: {self.strategy}")
+        
+
+    def extract_lines_from_pdf(self):
+        lines = []
+
+        for page in self.pdf.pages:
+            raw_text = page.extract_text()
+            if not raw_text:
+                continue
+
+            page_lines = raw_text.split('\n')
+            for line in page_lines:
+                clean_line = re.sub(r'\s+', ' ', line.strip())
+                if clean_line and not self.is_noise_line(clean_line):
+                    lines.append(clean_line)
+
+        return lines
+
+    def is_noise_line(self, line):
+        # Heuristic filters for headers, footers, or urls
+        noise_patterns = [
+            r'^page \d+ of \d+$',
+            r'^www\.', r'^https?://',
+            r'linkedin\.com', r'^mailto:',
+        ]
+        return any(re.search(p, line.lower()) for p in noise_patterns)
+
 
 
     def mixed_paragraph_and_column_layout(self, line_tolerance=8, gap_threshold=50, known_headers=None):
@@ -149,7 +177,6 @@ class PDFTextExtractor:
                 })
 
         return structured_lines
-    
     
     
     def merge_adjacent_header_lines(lines, known_headers=None):

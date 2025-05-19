@@ -9,29 +9,30 @@ utils = TextUtils()
 cleaner = CleaningUtils()
 info_extractor = ExtractionUtils()
 
-# choose an input
-input_num = 2
 
-if input_num == 1: 
-    # Option 1: Auto-detect or mixed
-    extractor = PDFTextExtractor("data/sample_1.pdf", strategy="columns")
-    lines = extractor.structured_lines
-    column_1, column_2 = utils.split_columns(lines)
-elif input_num == 2:
-    # Option 2: Auto-detect or mixed
-    extractor = PDFTextExtractor("data/sample_2.pdf", strategy="mixed")
-    lines = extractor.structured_lines
-    merged_lines = extractor.merge_adjacent_header_lines(lines)
-    column_1, column_2 = utils.split_columns(lines)
-else:
-    ValueError(" input_num is either 1 or 2. ")
-
+""" TEST 2-columns
+extractor = PDFTextExtractor("data/sample_2.pdf", strategy="columns")
+lines = extractor.structured_lines
+column_1, column_2 = utils.split_columns(lines)
 
 # extract CV sections independently from both columns
 sections_1 = utils.group_sections_from_single_column(column_1)
 sections_2 = utils.group_sections_from_single_column(column_2)
     # Merge the grouped sections from both columns
 sections = utils.merge_section_dicts(sections_1, sections_2)
+
+"""
+
+
+
+extractor = PDFTextExtractor("data/sample_1.pdf")
+lines = extractor.structured_lines
+
+# initial clean
+lines = [cleaner.initial_cleaner(line) for line in lines]
+
+# extract CV sections 
+sections = utils.group_sections_from_single_column(lines)
 
 # estimate years of experience 
 experience_section = sections["Experience"]  

@@ -26,6 +26,19 @@ class CleaningUtils:
         return cleaned.strip()
 
 
+    def initial_cleaner (self, line: str) -> str:
+        # Define unwanted bullet-like symbols
+        bullet_symbols = "•●▪■◆▶❖◉→◦"
+        
+        # Replace each bullet symbol with space
+        cleaned = re.sub(f"[{re.escape(bullet_symbols)}]", "", line)
+
+        # Normalize remaining whitespace
+        cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+
+        return cleaned
+
+
     def clean_all_sections_dates(self, sections_dict):
         """
         Removes dates and durations from all entries in all sections.

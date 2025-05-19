@@ -37,10 +37,10 @@ class TextUtils:
             "Experience": ["experience", "work experience", "professional experience", "experiences"],
             "Education": ["education", "academic background", "educational background"],
             "Certifications": ["certifications", "certification", "licenses"],
-            "Top Skills": ["top skills", "skills", "technical skills", "key skills"],
+            "Top Skills": ["top skills", "skills", "technical skills", "key skills", "Skills & abilities"],
             "Languages": ["languages", "language proficiency"],
             "Portfolio": ["portfolio", "projects"],
-            "About Me": ["about me", "summary", "professional summary", "profile"]
+            "Summary": ["about me", "summary", "professional summary", "profile"]
         }
     
         if known_headers is None:
@@ -54,6 +54,7 @@ class TextUtils:
     
         sections = {}
         current_section = None
+        contact_lines = []
     
         for line in column:
             line_clean = line.strip()
@@ -66,6 +67,11 @@ class TextUtils:
                 sections[current_section] = []
             elif current_section:
                 sections[current_section].append(line_clean)
+            else:
+                contact_lines.append(line_clean)
+
+            if contact_lines:
+                sections["contact"] = contact_lines
     
         return sections
 
