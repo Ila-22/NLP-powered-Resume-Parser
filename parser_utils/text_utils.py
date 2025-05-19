@@ -4,6 +4,9 @@ from datetime import datetime
 from nltk.corpus import stopwords
 import string
 import nltk
+import spacy
+
+nlp = spacy.load("en_core_web_md")
 
 # run this only once
 #nltk.download('stopwords')
@@ -87,7 +90,55 @@ class TextUtils:
             merged[key] = dict1.get(key, []) + dict2.get(key, [])
 
         return merged
-    
-    
-    
+
+
+    def contains_gpe(self, text):
+        # (country/city/state)
+        doc = nlp(text)
+        return any(ent.label_ == "GPE" for ent in doc.ents)
+
+
+    def parse_contact_block(self, lines):
+        contact = {
+            "name": None,
+            "headline": None,
+            "email": None,
+            "phone": None,
+            "linkedin": None,
+            "address": None,
+        }
+
+        email_pattern = re.compile(r'[\w\.-]+@[\w\.-]+\.\w+')
+        phone_pattern = re.compile(r'(\+?\d[\d\s\-()]{7,})')
+        linkedin_pattern = re.compile(r'linkedin\.com\/[^\s|•–]+', re.IGNORECASE)
+
+        # STEP 1: Flatten all fragments
+        fragments = []
+        for line in lines:
+            fragments.extend(part.strip() for part in re.split(r'[|•–]', line) if part.strip())
+
+        # STEP 2: Extract known fields
+        unclassified = []
+
+        for frag in fragments:
+            if email_pattern.search(frag) and not contact["email"]:
+                contact["email"] = email_pattern.search(frag).group()
+            elif phone_pattern.search(frag) and not contact["phone"]:
+                contact["phone"] = phone_pattern.search(frag).group()
+            elif linkedin_pattern.search(frag) and not contact["linkedin"]:
+                contact["linkedin"] = linkedin_pattern.search(frag).group()
+            else:
+                unclassified.append(frag)
+
+        # STEP 3: Infer name, headline, address from leftovers
+        for frag in unclassified:
+            if not contact["name"] and re.match(r'^[A-Z][a-z]+(?: [A-Z][a-z]+){0,3}$', frag):
+                contact["name"] = frag
+            elif not contact["headline"] and len(frag.split()) <= 10 and len(frag) <= 80:
+                contact["headline"] = frag
+            elif not contact["address"] and self.contains_gpe(frag):
+                contact["address"] = frag
+
+        return contact
+
 

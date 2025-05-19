@@ -34,6 +34,14 @@ lines = [cleaner.initial_cleaner(line) for line in lines]
 # extract CV sections 
 sections = utils.group_sections_from_single_column(lines)
 
+contact_info = utils.parse_contact_block(sections.get("contact", []))
+print(contact_info)
+
+import re
+fragments = []
+for line in lines:
+    fragments.extend(part.strip() for part in re.split(r'[|•–]', line) if part.strip())
+
 # estimate years of experience 
 experience_section = sections["Experience"]  
 approx_years = info_extractor.estimate_years_of_experience(experience_section)
