@@ -37,10 +37,18 @@ sections = utils.group_sections_from_single_column(lines)
 # extract contact info details 
 contact_info = utils.parse_contact_block(sections.get("contact", []))
 
-# estimate years of experience 
+# parsing experience 
 experience_section = sections["Experience"]  
+    # extract experience details 
+experience_info = info_extractor.parse_experience_section(experience_section)
 approx_years = info_extractor.estimate_years_of_experience(experience_section)
 print(f"Estimated years of experience: {approx_years}")
+
+# parsing education
+education_section = sections["Education"]  
+    # extract experience details 
+education_info = info_extractor.parse_education_section(education_section)
+
 
 # Clean out date ranges and durations from section content
 sections_no_date = cleaner.clean_all_sections_dates(sections)

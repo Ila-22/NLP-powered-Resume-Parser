@@ -49,9 +49,8 @@ class PDF_CV_READER:
     def is_noise_line(self, line):
         # Heuristic filters for headers, footers, or urls
         noise_patterns = [
-            r'^page \d+ of \d+$',
-            r'^www\.', r'^https?://',
-            r'linkedin\.com', r'^mailto:',
+            r'^page \d+ of \d+$', 
+            r'^mailto:',
         ]
         return any(re.search(p, line.lower()) for p in noise_patterns)
 
