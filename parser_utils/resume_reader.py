@@ -1,7 +1,7 @@
 import pdfplumber
 import re
 
-class PDF_CV_READER:
+class ResumeREADER:
     
     def __init__(self, pdf_path, strategy="single"):
         """

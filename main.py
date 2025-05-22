@@ -1,18 +1,19 @@
-from parser_utils import PDF_CV_READER
+from parser_utils import ResumeREADER
 from parser_utils import TextUtils
 from parser_utils import CleaningUtils
 from parser_utils import ExtractionUtils
+from parser_utils import CVFormatter
 
 
 # Instantiate classes
 utils = TextUtils()
 cleaner = CleaningUtils()
-info_extractor = ExtractionUtils()
+extractor = ExtractionUtils()
 
 
 """ TEST 2-columns
-extractor = PDF_CV_READER("data/sample_2.pdf", strategy="columns")
-lines = extractor.structured_lines
+resume_reader = ResumeREADER("data/sample_2.pdf", strategy="columns")
+lines = resume_reader.structured_lines
 column_1, column_2 = utils.split_columns(lines)
 
 # extract CV sections independently from both columns
@@ -25,8 +26,8 @@ sections = utils.merge_section_dicts(sections_1, sections_2)
 
 
 
-extractor = PDF_CV_READER("data/sample_1.pdf")
-lines = extractor.structured_lines
+resume_reader = ResumeREADER("data/sample_1.pdf")
+lines = resume_reader.structured_lines
 
 # initial clean
 lines = [cleaner.initial_cleaner(line) for line in lines]
@@ -34,20 +35,35 @@ lines = [cleaner.initial_cleaner(line) for line in lines]
 # extract CV sections 
 sections = utils.group_sections_from_single_column(lines)
 
-# extract contact info details 
+""" parsing contact info """
 contact_info = utils.parse_contact_block(sections.get("contact", []))
 
-# parsing experience 
-experience_section = sections["Experience"]  
-    # extract experience details 
-experience_info = info_extractor.parse_experience_section(experience_section)
-approx_years = info_extractor.estimate_years_of_experience(experience_section)
-print(f"Estimated years of experience: {approx_years}")
 
-# parsing education
+""" parsing education """
 education_section = sections["Education"]  
-    # extract experience details 
-education_info = info_extractor.parse_education_section(education_section)
+education_info = extractor.parse_education_section(education_section)
+
+
+""" parsing experience """ 
+experience_section = sections["Experience"]  
+experience_info = extractor.parse_experience_section(experience_section)
+approx_years = extractor.estimate_years_of_experience(experience_section)
+
+
+""" formatter """
+formatter = CVFormatter(contact_info, education_info, experience_info)
+structured_output = formatter.to_dict()
+    # visualization
+formatter.display_cv_info(structured_output, approx_years)
+
+
+
+
+
+
+
+
+
 
 
 # Clean out date ranges and durations from section content
