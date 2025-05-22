@@ -37,19 +37,7 @@ class CleaningUtils:
         cleaned = re.sub(r'\s+', ' ', cleaned).strip()
 
         return cleaned
-
-
-    def clean_all_sections_dates(self, sections_dict):
-        """
-        Removes dates and durations from all entries in all sections.
-        Returns a new cleaned sections dictionary.
-        """
-        cleaned_dict = {}
-        for section, items in sections_dict.items():
-            cleaned_items = [self.remove_dates_and_durations(line) for line in items]
-            cleaned_dict[section] = cleaned_items
-        return cleaned_dict
-
+    
 
     def clean_text_entries(self, items):
         """
@@ -71,18 +59,6 @@ class CleaningUtils:
     
         return cleaned
     
-
-    def clean_all_sections(self, sections_dict):
-        """
-        Cleans all entries across all sections.
-        Applies general text cleanup on top of date removal.
-        """
-        cleaned_all = {}
-        for section, items in sections_dict.items():
-            no_dates = [self.remove_dates_and_durations(line) for line in items]
-            cleaned_items = self.clean_text_entries(no_dates)
-            cleaned_all[section] = cleaned_items
-        return cleaned_all
     
     def compress_section_to_keywords(self, lines, min_word_length=3):
         """

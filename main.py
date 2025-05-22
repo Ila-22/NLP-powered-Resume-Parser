@@ -58,29 +58,9 @@ formatter.display_cv_info(structured_output, approx_years)
 
 
 
-
-
-
-
-
-
-
-
-# Clean out date ranges and durations from section content
-sections_no_date = cleaner.clean_all_sections_dates(sections)
-
-# Apply general text cleanup to remove artifacts, empty lines, etc.
-sections_cleaned = cleaner.clean_all_sections(sections_no_date)
-
-# extract keywords and erase the rest
-compressed_sections = {
-    section: cleaner.compress_section_to_keywords(lines)
-    for section, lines in sections_cleaned.items()
-}
-
-
-
-
+# skills key words
+skill_section = sections["Skills"]  
+cleaner.compress_section_to_keywords(lines)
 
 
 

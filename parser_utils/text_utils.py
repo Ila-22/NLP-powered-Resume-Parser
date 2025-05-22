@@ -40,7 +40,7 @@ class TextUtils:
             "Experience": ["experience", "work experience", "professional experience", "experiences"],
             "Education": ["education", "academic background", "educational background"],
             "Certifications": ["certifications", "certification", "licenses"],
-            "Top Skills": ["top skills", "skills", "technical skills", "key skills", "Skills & abilities"],
+            "Skills": ["top skills", "skills", "technical skills", "key skills", "Skills & abilities"],
             "Languages": ["languages", "language proficiency"],
             "Portfolio": ["portfolio", "projects"],
             "Summary": ["about me", "summary", "professional summary", "profile"]

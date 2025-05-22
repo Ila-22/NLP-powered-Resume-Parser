@@ -71,7 +71,7 @@ class ResumeREADER:
                 "Experience": ["experience", "work experience", "professional experience", "experiences"],
                 "Education": ["education", "academic background", "educational background"],
                 "Certifications": ["certifications", "certification", "licenses"],
-                "Top Skills": ["top skills", "skills", "technical skills", "key skills"],
+                "Skills": ["top skills", "skills", "technical skills", "key skills"],
                 "Languages": ["languages", "language proficiency"],
                 "Portfolio": ["portfolio", "projects"],
                 "About Me": ["about me", "summary", "professional summary", "profile"]
@@ -186,7 +186,7 @@ class ResumeREADER:
         if known_headers is None:
             known_headers = {
                 "Contact", "Experience", "Education",
-                "Certifications", "Top Skills", "Languages",
+                "Certifications", "Skills", "Languages",
                 "Portfolio", "About Me", "Projects"
             }
     
