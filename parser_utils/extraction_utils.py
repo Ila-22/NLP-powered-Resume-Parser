@@ -120,5 +120,19 @@ class ExtractionUtils:
         return education_entries
 
 
+    def extract_skills(self, lines):
+        skills = []
 
+        for line in lines:
+            # Remove category prefix if present
+            if ":" in line:
+                _, skill_part = line.split(":", 1)
+            else:
+                skill_part = line
+
+            # Split by comma, clean spacing
+            skill_list = [s.strip() for s in skill_part.split(",") if s.strip()]
+            skills.extend(skill_list)
+
+        return sorted(set(skills)) 
 

@@ -15,8 +15,14 @@ nlp = spacy.load("en_core_web_md")
 
 class TextUtils:
     """ General Text Utilities"""
-    def __init__(self):
-        pass
+    def __init__(self, strategy="single"):
+        self.strategy = strategy
+
+    def get_sections (self, lines):
+        self.lines = lines
+        if self.strategy == "single":
+            sections = self.group_sections_from_single_column()
+        return sections
 
     def split_columns(self, lines):
         """
@@ -28,7 +34,7 @@ class TextUtils:
         return column_1, column_2
 
 
-    def group_sections_from_single_column(self, column, known_headers=None):
+    def group_sections_from_single_column(self, known_headers=None):
         """
         Groups lines under section headers from a single column.
         Accepts flexible header names (e.g., 'Work Experience' → 'Experience').
@@ -59,7 +65,7 @@ class TextUtils:
         current_section = None
         contact_lines = []
     
-        for line in column:
+        for line in self.lines:
             line_clean = line.strip()
             line_normalized = line_clean.lower()
     

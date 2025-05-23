@@ -3,10 +3,11 @@ from dateutil.relativedelta import relativedelta
 
 
 class CVFormatter:
-    def __init__(self, contact, education, experience):
+    def __init__(self, contact, education, experience, skills):
         self.contact = contact
         self.education = education
         self.experience = experience
+        self.skills = skills
 
 
     def compute_period(self, start_str, end_str):
@@ -24,7 +25,6 @@ class CVFormatter:
         except Exception:
             return f"{start_str} - {end_str}"
         
-
     def format_contact_info(self):
         return {
             'name': self.contact.get('name', ''),
@@ -63,7 +63,8 @@ class CVFormatter:
         return {
             'contact_info': self.format_contact_info(),
             'education_info': self.format_education_info(),
-            'experience_info': self.format_experience_info()
+            'experience_info': self.format_experience_info(),
+            'skills': self.skills
         }
 
 
@@ -71,6 +72,7 @@ class CVFormatter:
         contact = structured_output['contact_info']
         education = structured_output['education_info']
         experience = structured_output['experience_info']
+        skills = structured_output['skills']
 
         print("📇 CONTACT INFORMATION")
         print(f"Name     : {contact['name']}")
@@ -78,12 +80,18 @@ class CVFormatter:
         print(f"Phone    : {contact['phone']}")
         print(f"LinkedIn : {contact['linkedin']}")
         print(f"Address  : {contact['address']}")
+
         print("\n🎓 EDUCATION")
         for edu in education:
             print(f"- {edu['degree']} at {edu['institution']}")
             print(f"  Period: {edu['period']}")
+
         print("\n💼 EXPERIENCE")
         for job in experience:
             print(f"- {job['role']} at {job['company']}")
             print(f"  Period: {job['period']}")
         print(f"\n🧮 Estimated Years of Experience: {approx_years:.1f} years")
+
+        print("\n💪 SKILLS")
+        for skill in skills:
+            print(f"- {skill}")
