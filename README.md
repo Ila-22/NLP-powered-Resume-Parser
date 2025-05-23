@@ -1,42 +1,44 @@
 NLP-POWERED-RESUME-PARSER
 ==========================
 
-A Python-based Natural Language Processing (NLP) tool designed to extract and analyze information from resume PDFs. This project automatically detects layout structures, estimates years of experience, cleans and compresses the extracted data for downstream processing and more!
+An intelligent resume parsing tool using NLP techniques to extract structured information  from PDF resumes.
 
 ------------
-📁 Structure
+📁 Project Structure
 ------------
 ```text
-NLP-POWERED-RESUME-PARSER
+NLP-POWERED-RESUME-PARSER/
 │
-├── data/ # Sample resume PDFs
-│ ├── sample_1.pdf
-│ └── sample_2.pdf
+├── data/
+│ ├── sample_1.pdf        # Single-column layout resume
+│ └── sample_2.pdf        # Multi-column layout resume
 │
-├── parser_utils/ # Core utility modules
+├── parser_utils/         # Core logic for parsing resumes
 │ ├── init.py
-│ ├── cleaning_utils.py
-│ ├── extraction_utils.py
-│ ├── pdf_parser.py
-│ └── text_utils.py
+│ ├── cleaning_utils.py   # Text preprocessing and cleaning utilities
+│ ├── cvformatter.py      # Format extracted data into a dictionary or readable format
+│ ├── extraction_utils.py # Education, experience, and skills extraction logic
+│ ├── resume_reader.py    # PDF reading and layout-specific text structuring
+│ └── text_utils.py       # Section splitting and contact parsing
 │
+├── main.py               # the pipeline script
 ├── .gitignore
-├── main.py # Main script for parsing and analysis
 └── README.md
 ```
 
-----------------
-📦 Dependencies
-----------------
-Make sure the following packages are installed:
+## 🚀 Features
+- Extracts structured information from resumes:
+  - 📇 Contact Information
+  - 🎓 Education History
+  - 💼 Work Experience
+  - 💪 Skill Set
+  - 🧮 Years of Experience
+- Handles different resume layouts: `"single"` and `"column"`
+- Outputs results in a formatted structure for easy consumption
 
-- pdfplumber – for PDF text extraction
+## 🧠 Core Technologies
 
-- nltk, spacy – for NLP tasks
-
-- re, datetime – built-in, for regex/date processing
-
-----------------
-🧪 Samples
-----------------
-Sample resumes (sample_1.pdf, sample_2.pdf) are included in the data/ directory to test the pipeline.
+- Python
+- NLP-based text segmentation and pattern matching
+- PDF text extraction
+- Regex and rule-based parsing
