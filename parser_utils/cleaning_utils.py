@@ -13,12 +13,12 @@ class CleaningUtils:
         pass
 
 
-    def clean_lines(self, lines, strategy="single"):
-        if strategy == "single":
+    def clean_lines(self, lines, CV_format="single"):
+        if CV_format == "single":
             # Handle list of plain strings
             return [self.initial_cleaner(line) for line in lines if isinstance(line, str)]
 
-        elif strategy == "columns":
+        elif CV_format == "columns":
             # Handle list of dicts with 'left' and 'right' keys
             return [
                 {
@@ -29,7 +29,7 @@ class CleaningUtils:
             ]
 
         else:
-            raise ValueError(f"Unknown strategy: {strategy}")
+            raise ValueError(f"Unknown CV_format: {CV_format}")
 
 
 

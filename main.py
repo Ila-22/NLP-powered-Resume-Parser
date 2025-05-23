@@ -10,30 +10,16 @@ cleaner = CleaningUtils()
 extractor = ExtractionUtils()
 
 
-""" TEST 2-columns
-
-strategy="columns"
-resume_reader = ResumeREADER("data/sample_2.pdf", strategy=strategy)
+""" CV reader + cleanser """
+CV_format = "single" # either "single" or "column" layout
+resume_reader = ResumeREADER("data/sample_1.pdf", CV_format=CV_format)
 lines = resume_reader.structured_lines
     # initial cleaning
-lines = cleaner.clean_lines(lines, strategy=strategy)
-
-utils = TextUtils(strategy=strategy)
-sections = utils.get_sections(lines)
-
-
-"""
-
-
-strategy = "single"
-resume_reader = ResumeREADER("data/sample_1.pdf", strategy=strategy)
-lines = resume_reader.structured_lines
-    # initial cleaning
-lines = cleaner.clean_lines(lines, strategy=strategy)
+lines = cleaner.clean_lines(lines, CV_format=CV_format)
 
 
 """ extract CV sections """ 
-utils = TextUtils(strategy=strategy)
+utils = TextUtils(CV_format=CV_format)
 sections = utils.get_sections(lines)
 
 
@@ -62,10 +48,6 @@ formatter = CVFormatter(contact_info, education_info, experience_info, skill_set
 structured_output = formatter.to_dict()
     # visualization
 formatter.display_cv_info(structured_output, approx_years)
-
-
-
-
 
 
 #cleaner.compress_section_to_keywords(skill_section)

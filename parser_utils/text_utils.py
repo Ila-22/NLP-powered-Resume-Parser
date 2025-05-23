@@ -15,22 +15,25 @@ nlp = spacy.load("en_core_web_md")
 
 class TextUtils:
     """ General Text Utilities"""
-    def __init__(self, strategy="single"):
-        self.strategy = strategy
+    def __init__(self, CV_format="single"):
+        self.CV_format = CV_format
 
     def get_sections (self, lines):
         self.lines = lines
 
-        if self.strategy == "single":
+        if self.CV_format == "single":
             sections = self.group_sections_from_single_column(lines)
 
-        elif self.strategy == "columns":
+        elif self.CV_format == "columns":
             column_1, column_2 = self.split_columns()
                 # extract CV sections independently from both columns
             sections_1 = self.group_sections_from_single_column(column_1)
             sections_2 = self.group_sections_from_single_column(column_2)
                 # Merge the grouped sections from both columns
             sections = self.merge_section_dicts(sections_1, sections_2)
+
+        else:
+            raise ValueError(f"Unknown CV_format: {self.CV_format}")
             
         return sections
 

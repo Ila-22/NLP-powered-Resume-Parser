@@ -3,16 +3,15 @@ import re
 
 class ResumeREADER:
     
-    def __init__(self, pdf_path, strategy="single"):
+    def __init__(self, pdf_path, CV_format="single"):
         """
         Initializes and loads the PDF.
-        Strategy options:
-        - "auto": intelligently picks best layout method
-        - "mixed": allows paragraphs and columns
+        CV_format options:
+        - "single": single column layout 
         - "columns": assumes full two-column layout
         """
         self.pdf_path = pdf_path
-        self.strategy = strategy.lower()
+        self.strategy = CV_format.lower()
         self.pdf = pdfplumber.open(pdf_path)
 
         # Extract upon initialization
@@ -22,8 +21,6 @@ class ResumeREADER:
     def _run_extraction(self):
         if self.strategy == "columns":
             return self.left_right_column_format()
-        elif self.strategy == "mixed":
-            return self.mixed_paragraph_and_column_layout()
         elif self.strategy == "single":
             return self.extract_lines_from_pdf()
         else:
