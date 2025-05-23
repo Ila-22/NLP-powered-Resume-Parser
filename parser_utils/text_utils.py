@@ -20,21 +20,32 @@ class TextUtils:
 
     def get_sections (self, lines):
         self.lines = lines
+
         if self.strategy == "single":
-            sections = self.group_sections_from_single_column()
+            sections = self.group_sections_from_single_column(lines)
+
+        elif self.strategy == "columns":
+            column_1, column_2 = self.split_columns()
+                # extract CV sections independently from both columns
+            sections_1 = self.group_sections_from_single_column(column_1)
+            sections_2 = self.group_sections_from_single_column(column_2)
+                # Merge the grouped sections from both columns
+            sections = self.merge_section_dicts(sections_1, sections_2)
+            
         return sections
 
-    def split_columns(self, lines):
+    def split_columns(self):
         """
         Splits a list of line dicts into two separate columns.
         Filters out empty strings.
         """
+        lines = self.lines
         column_1 = [line['left'] for line in lines if line['left'].strip()]
         column_2 = [line['right'] for line in lines if line['right'].strip()]
         return column_1, column_2
 
 
-    def group_sections_from_single_column(self, known_headers=None):
+    def group_sections_from_single_column(self, lines, known_headers=None):
         """
         Groups lines under section headers from a single column.
         Accepts flexible header names (e.g., 'Work Experience' → 'Experience').
@@ -65,7 +76,7 @@ class TextUtils:
         current_section = None
         contact_lines = []
     
-        for line in self.lines:
+        for line in lines:
             line_clean = line.strip()
             line_normalized = line_clean.lower()
     

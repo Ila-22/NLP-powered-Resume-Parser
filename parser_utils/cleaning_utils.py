@@ -12,6 +12,27 @@ class CleaningUtils:
     def __init__(self):
         pass
 
+
+    def clean_lines(self, lines, strategy="single"):
+        if strategy == "single":
+            # Handle list of plain strings
+            return [self.initial_cleaner(line) for line in lines if isinstance(line, str)]
+
+        elif strategy == "columns":
+            # Handle list of dicts with 'left' and 'right' keys
+            return [
+                {
+                    'left': self.initial_cleaner(item.get('left', '')),
+                    'right': self.initial_cleaner(item.get('right', ''))
+                }
+                for item in lines if isinstance(item, dict)
+            ]
+
+        else:
+            raise ValueError(f"Unknown strategy: {strategy}")
+
+
+
     def remove_dates_and_durations(self, text):
         """
         Removes date ranges and durations from a given text string.
